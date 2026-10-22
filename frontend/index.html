@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClinicCare Pro - Clinic Management System</title>
+  <meta name="description" content="Professional clinic management system for efficient patient care, appointments, prescriptions, and clinic operations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <!-- Auth Screen -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-bg">
+      <div class="auth-blob blob-1"></div>
+      <div class="auth-blob blob-2"></div>
+      <div class="auth-blob blob-3"></div>
+    </div>
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+          <div class="logo-text">
+            <h1>ClinicCare Pro</h1>
+            <p>Professional Clinic Management</p>
+          </div>
+        </div>
+        <form id="login-form" class="auth-form">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <div class="input-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="login-email" placeholder="Enter your email" required autocomplete="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="input-wrapper">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+              <button type="button" class="toggle-password" onclick="togglePassword('login-password')" title="Toggle password visibility" aria-label="Toggle password visibility">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div id="login-error" class="alert alert-error"></div>
+          <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+            <span class="btn-text">Sign In</span>
+            <span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i></span>
+          </button>
+        </form>
+        <div class="auth-demo-hint">
+          <p><strong>Demo Accounts:</strong></p>
+          <div class="demo-accounts">
+            <button class="demo-btn" onclick="fillDemo('admin@clinic.com','Admin@123456')">Admin</button>
+            <button class="demo-btn" onclick="fillDemo('dr.smith@clinic.com','Doctor@123456')">Doctor</button>
+            <button class="demo-btn" onclick="fillDemo('receptionist@clinic.com','Recept@123456')">Reception</button>
+            <button class="demo-btn" onclick="fillDemo('nurse@clinic.com','Nurse@123456')">Nurse</button>
+            <button class="demo-btn" onclick="fillDemo('pharmacist@clinic.com','Pharma@123456')">Pharmacist</button>
+            <button class="demo-btn" onclick="fillDemo('laboratorist@clinic.com','Lab@123456')">Laboratorist</button>
+            <button class="demo-btn" onclick="fillDemo('cashier@clinic.com','Cashier@123456')">Cashier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="logo-icon-sm"><i class="fas fa-heartbeat"></i></div>
+          <span class="sidebar-brand">ClinicCare Pro</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar navigation" aria-label="Toggle sidebar navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" onclick="closeSidebar()" title="Close navigation menu" aria-label="Close navigation menu">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <span class="user-name" id="sidebar-name">Loading...</span>
+          <span class="user-role" id="sidebar-role">...</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <!-- Navigation items injected by JS based on role -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+      <!-- Assumed Role Banner (Admin Override Mode) -->
+      <div id="assumed-session-banner">
+        <div class="assumed-banner-content">
+          <i class="fas fa-user-secret assumed-banner-icon"></i>
+          <span><strong>Administrator Override:</strong> Operating as <span id="assumed-user-name" class="assumed-user-name">Doctor</span> (<span id="assumed-user-role" class="assumed-user-role">doctor</span>)</span>
+        </div>
+        <button onclick="Auth.revertAdmin()" class="btn-revert-admin">
+          <i class="fas fa-undo"></i> Return to System Administrator
+        </button>
+      </div>
+
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Toggle mobile navigation menu" aria-label="Toggle mobile navigation menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="breadcrumb" id="breadcrumb">
+            <span>Dashboard</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="global-search" placeholder="Search patients, appointments...">
+          </div>
+          <div class="notification-btn-wrapper">
+            <button class="icon-btn" id="notif-btn" onclick="toggleNotifications()" title="View notifications" aria-label="View notifications">
+              <i class="fas fa-bell"></i>
+              <span class="badge" id="notif-count">0</span>
+            </button>
+            <div class="notifications-dropdown" id="notifications-dropdown">
+              <div class="notif-header">
+                <h4>Notifications</h4>
+                <button onclick="markAllRead()" class="link-btn">Mark all read</button>
+              </div>
+              <div class="notif-list" id="notif-list">
+                <div class="notif-empty">No notifications</div>
+              </div>
+            </div>
+          </div>
+          <div class="user-menu-wrapper">
+            <button class="user-menu-btn" id="user-menu-btn" onclick="toggleUserMenu()">
+              <div class="user-avatar-sm" id="topbar-avatar"><i class="fas fa-user"></i></div>
+              <span id="topbar-name">User</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown" id="user-dropdown">
+              <a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> My Profile</a>
+              <a href="#" onclick="showChangePassword()"><i class="fas fa-key"></i> Change Password</a>
+              <hr>
+              <a href="#" onclick="logout()" class="danger"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content" id="page-content">
+        <!-- Pages are injected here dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Global Modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal" id="modal-container" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal</h3>
+        <button class="modal-close" onclick="closeModal()" title="Close modal dialog" aria-label="Close modal dialog"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Print Frame -->
+  <iframe id="print-frame" class="print-frame" title="Print Frame"></iframe>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/patients.js"></script>
+  <script src="js/appointments.js"></script>
+  <script src="js/doctors.js"></script>
+  <script src="js/medicalRecords.js"></script>
+  <script src="js/vitalSigns.js"></script>
+  <script src="js/prescriptions.js"></script>
+  <script src="js/medicines.js"></script>
+  <script src="js/labTests.js"></script>
+  <script src="js/invoices.js"></script>
+  <script src="js/payments.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/visits.js"></script>
+  <script src="js/financial.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/auditLogs.js"></script>
+  <script src="js/users.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
